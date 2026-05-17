@@ -36,9 +36,9 @@ cd claude-code-spinner
 }
 ```
 
-## Сектор приз: "Вопросик на тормозах" на хук Stop
+## Сектор приз: рандомные звуки на хуки Stop и Notification
 
-Когда основной агент ответит, ты услышишь **«Вопросик на тормозах»**. Работает через `afplay` (уже есть на macOS).
+Когда основной агент ответит или Claude Code дёрнет уведомление, ты услышишь случайный звук из набора в `~/.claude/sounds/` (по умолчанию: **«Вопросик на тормозах»**, **«Captain what»**, **«Peasant what»**). Работает через `afplay` (уже есть на macOS).
 
 ### Установка через Claude Code
 
@@ -46,11 +46,14 @@ cd claude-code-spinner
 /install-hook
 ```
 
-Если громко, попроси клод сделать потише. В ручной установке есть пример, можно `-v 1` поменять на `-v 0.5`.
+Если громко, попроси клод сделать потише — в `sounds/notification.sh` правится `-v 1` (например, на `-v 0.5`).
 
 ### Ручная установка
 
-Скопируй `sounds/stop-hook.mp3` в `~/.claude/sounds/` и добавь хук в `~/.claude/settings.json`:
+1. Создай папку: `mkdir -p ~/.claude/sounds`
+2. Скопируй все `*.mp3` из `sounds/` в `~/.claude/sounds/`
+3. Скопируй `sounds/notification.sh` в `~/.claude/sounds/notification.sh` и сделай его исполняемым: `chmod +x ~/.claude/sounds/notification.sh`
+4. Добавь хуки в `~/.claude/settings.json`:
 
 ```json
 {
@@ -61,7 +64,18 @@ cd claude-code-spinner
         "hooks": [
           {
             "type": "command",
-            "command": "afplay -v 1 ~/.claude/sounds/stop-hook.mp3"
+            "command": "bash ~/.claude/sounds/notification.sh"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/sounds/notification.sh"
           }
         ]
       }
@@ -69,6 +83,8 @@ cd claude-code-spinner
   }
 }
 ```
+
+Скрипт случайно выбирает один `.mp3` из `~/.claude/sounds/` — закинь свои файлы в эту папку, и они автоматически попадут в пул. Чтобы исключить звук, просто убери его из директории.
 
 ## Лицензия
 
